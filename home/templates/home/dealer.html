@@ -1,0 +1,83 @@
+<!-- <!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style type="text/css">
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script>
+      let map;
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 27.2046, lng: 77.4977 },
+          zoom: 8,
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAZTAT0sKQCF2kncG2oLpULT9s8PiJi1Co&callback=initMap&libraries=&v=weekly"
+      async
+    ></script>
+  </body>
+</html> -->
+{% load static %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <link href="{% static 'assets/dealer.css' %}" rel="stylesheet" />
+
+    <!-- Reference To Bing Maps API -->
+    <script type="text/javascript" src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=7.0"></script>
+
+    <!-- Our Bing Maps JavaScript Code -->
+    <script src="{% static 'assets/js/AnimatedMaps.js' %}"></script>
+
+    <!-- Use script tag to register the Animation module -->
+    <script>Microsoft.Maps.registerModule('AnimationModule');</script>
+    <script type="text/javascript" src="{% static 'assets/js/AnimationModule.js' %}"></script>
+</head>
+<body onload="GetMap();">
+    <div id='myMap'></div>
+
+    <div class="sidePanel">
+        <input type="button" value="Clear Map" onclick="ClearMap();" /><br /><br />
+
+        <span>CSS Pushpin Animations</span><br />
+        <input type="button" value="Scale on Hover" onclick="ScalingPin();" /><br /><br />
+
+        <span>Pushpin Animations</span><br/>
+        <input type="button" value="Drop Pin" onclick="DropPin();" /><br />
+        <input type="button" value="Bounce Pin" onclick="BouncePin();" /><br />
+        <input type="button" value="Bounce 4 Pins After Each Other" onclick="Bounce4Pins();" /><br /><br />
+        
+        <span>Path Animations</span><br />
+        <input type="button" value="Move Pin Along Path" onclick="MovePinOnPath();" /><br />
+        <input type="button" value="Move Pin Along Geodesic Path" onclick="MovePinOnPath(true);" /><br />
+        <input type="button" value="Move Map Along Path" onclick="MoveMapOnPath();" /><br />
+        <input type="button" value="Move Map Along Geodesic Path" onclick="MoveMapOnPath(true);" /><br />
+        <input type="button" value="Draw Path" onclick="DrawPath();" /><br />
+        <input type="button" value="Draw Geodesic Path" onclick="DrawPath(true);" />
+    </div>
+</body>
+</html>

@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="shortcut icon" href="#">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap" rel="stylesheet">
+        <title> 
+            SDP-2
+        </title>
+        <script>
+            function customize() {
+                let a =document.querySelector(".customize");
+                let b = document.querySelector(".payment");
+                document.querySelector(".instructions").style.display = "none";
+                b.classList.toggle('active', false);
+                a.classList.toggle('active', true);
+                // let a = document.querySelector(".customize");
+                // document.querySelector(".instructions").style.display = "none";
+                // a.style.display="block";
+                // a.classList.toggle('active');
+                // let b = document.querySelector(".payment");
+                // b.style.display = "none";
+                // b.classList.toggle('active', false);
+            }
+            function payment() {
+                let a = document.querySelector(".payment");
+                let b = document.querySelector(".customize");
+                document.querySelector(".instructions").style.display = "none";
+                b.classList.toggle('active', false);
+                a.classList.toggle('active', true);
+                // let a = document.querySelector(".payment");
+                // document.querySelector(".instructions").style.display = "none";
+                // a.style.display="block";
+                // a.classList.toggle('active');
+                // let b = document.querySelector(".customize");
+                // b.style.display = "none";
+                // b.classList.toggle('active', false);
+                document.querySelector("#cash").className += " active";
+                document.querySelector("#Cash").style.display = "block";
+            }
+            function openCity(evt, cityName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(cityName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+        </script>
+        <style>
+            body, html{
+                margin: 0;
+                height: 100%;
+                width: 100%;
+                padding: 0;
+                font-family: Poppins;
+            }
+            .container{
+                display: grid;
+                grid-template-columns: 70% 30%;
+                grid-auto-rows: 100vh;
+            }
+            .buyopts{
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+            .buyopts > div{
+                border: 2px solid black;
+            }
+            .nav1, .nav2{
+                width: 100%;
+                display: inline;
+            }
+            .allopts{
+                overflow: auto;
+                height: 95.5%;
+            }
+            .customize{
+                color:yellow;
+                top: 0%;
+                width: 100%;
+                height: 0%;
+                transition: height 0.26s linear;
+                overflow: auto;
+                display: block;
+            }
+            .customize.active{
+                height: 100%;
+                
+            }
+            .payment{
+                color: yellow;
+                top: 0%;
+                width: 100%;
+                height: 0%;
+                transition: height 0.26s linear;
+                overflow: auto;
+                display: block;
+            }
+            .payment.active{
+                height: 100%;
+                /* transition: height 0.2 linear; */
+            }
+            /* Style the tab */
+            .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            align-items: center;
+            justify-items: center;
+            }
+
+            /* Style the buttons that are used to open the tab content */ 
+            .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+            background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+            background-color: #ccc;
+            }
+
+            /* Style the tab content */
+            .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+            }
+            h2{
+                margin-left: 20px;
+            }
+            /* end of payment tabs */
+            /* .instructions{
+                top: 0%;
+                width: 100%;
+                height: 0%;
+                transition: height 1s linear;
+            }
+            .instructions{
+                height: 100%;
+                transition: heigth 1s linear;
+            } */
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div id="modelcontainer" style="background-color: skyblue; border: 2px solid black; width: 100%; height: 100%;"> 
+            </div>
+            <div style="background-color: blue;">
+                <div class="buyopts">
+                    <div><button onclick="customize();" class="nav1">Customize</button></div>
+                    <div><button onclick="payment()" class="nav2">Continue to Buy</button></div>
+                </div>
+                <div class="allopts">
+                    <div class="instructions">
+                        <h3 style="padding: 5px 20px;">
+                            Step1: Select Customize button to customize your own car.<br>
+                            Step2: Click on "Continue to buy" to go to see payment methods and Payments.
+                        </h3>
+                    </div>
+                    <div class="customize" id="info">
+                        <div style="margin-left: 30px;">
+                            <span>Select car body color</span><br>
+                            <span class="colorPicker"><input id="body-color" type="color" value="#ff0000"></input><br/>Body</span><br><br>
+                            <span>Select car details color</span><br>
+                            <span class="colorPicker"><input id="details-color" type="color" value="#ffffff"></input><br/>Details</span><br><br>
+                            <span>Select car glass color</span><br>
+                            <span class="colorPicker"><input id="glass-color" type="color" value="#ffffff"></input><br/>Glass</span>
+                        
+                            <br><br>
+                            <button id = "modeltoferrari">Change Model</button>
+                        </div>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                        <h2>Customize your Car here</h2>
+                    </div>
+                    <div class="payment">
+                        <div class="tab">
+                            <div><button class="tablinks" id="cash" onclick="openCity(event, 'Cash')">&lt;Cash&gt;</button></div>
+                            <div><button class="tablinks" onclick="openCity(event, 'Lease')">&lt;Lease&gt;</button></div>
+                            <div><button class="tablinks" onclick="openCity(event, 'Loan')">&lt;Loan&gt;</button></div>
+                        </div>
+                        <div id="Cash" class="tabcontent">
+                            <p>Buy your car with Cash</p>
+                            <h4>You have to pay {{cashprice}} rupees</h4>
+                        </div>
+                        
+                        <div id="Lease" class="tabcontent">
+                            <p>Take our car for Lease</p> 
+                            <h4>You have to pay {{leaseprice}}/month</h4>
+                        </div>
+                        
+                        <div id="Loan" class="tabcontent">
+                            <p>Buy your car with monthly installment</p>
+                            <h4>You have to pay {{loanprice}}/month</h4>
+                        </div>
+                        <h2>Enter Account Details</h2>
+                        <form action="{% url 'payments' %}" method="post">
+                            {% csrf_token %}
+                            {{ paymentform }}
+                            {{ cardform }}
+                            <input type="submit">
+                        </form>
+                        <!-- <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2>
+                        <h2>Add your payment details here</h2> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="{% static 'assets/3dmodeljsfiles/color.js' %}"></script>
+        <!-- <script type="module" src="{% static 'assets/3dmodeljsfiles/basic1.js' %}"></script> -->
+    </body>
+</html>

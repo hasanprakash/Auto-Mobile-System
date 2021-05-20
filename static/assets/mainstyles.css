@@ -1,0 +1,153 @@
+body, html{
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.imghere{
+    background: rgb(118, 248, 146);
+    color: rgb(118, 248, 151);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    
+}
+*{
+    font-family: sans-serif;
+}
+h2{
+    color: blue;
+}
+.container{
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+}
+.carnames{
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translateX(-50%);
+    display: block
+}
+.carnames ul{
+}
+.carnames ul li{
+    display: inline;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* all drop down options */
+/* telsa */
+.tesla{
+    display: inline-block;
+    position: relative;
+}
+.teslaopts{
+    position: absolute;
+    /* display: none; */
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+.teslaopts p{
+    cursor: pointer;
+    padding-left: 7px;
+}
+.tesla:hover .teslaopts{
+    /* display: block; */
+    visibility: visible;
+    opacity: 1;
+    transform: scaleY(1);
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+
+/* bugatti */
+.bugatti{
+    display: inline-block;
+    position: relative;
+}
+.bugattiopts{
+    position: absolute;
+    /* display: none; */
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+.bugattiopts p{
+    cursor: pointer;
+    padding-left: 7px;
+}
+.bugatti:hover .bugattiopts{
+    /* display: block; */
+    visibility: visible;
+    opacity: 1;
+    transform: scaleY(1);
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+
+/* rolls royce */
+.rolls{
+    display: inline-block;
+    position: relative;
+}
+.rollsopts{
+    position: absolute;
+    /* display: none; */
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+.rollsopts p{
+    padding-left: 10px;
+    cursor: pointer;
+}
+.rolls:hover .rollsopts{
+    /* display: block; */
+    visibility: visible;
+    opacity: 1;
+    transform: scaleY(1);
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+
+/* lamborghini */
+.lambo{
+    display: inline-block;
+    position: relative;
+}
+.lamboopts{
+    position: absolute;
+    /* display: none; */
+    transform-origin: 50% 0%;
+    transform: scaleY(0);
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+.lamboopts p{
+    cursor: pointer;
+    padding-left: 7px;
+}
+.lambo:hover .lamboopts{
+    /* display: block; */
+    visibility: visible;
+    opacity: 1;
+    transform: scaleY(1);
+    transition: visibility 0s, opacity 0.5s, transform 0.5s linear;
+}
+.cardet{
+    position: absolute;
+    right: 20%;
+    bottom: 40%;
+    /* transform: translateX(-50%); */
+    display: block;
+}

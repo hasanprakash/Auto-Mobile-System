@@ -1,0 +1,199 @@
+.templogin {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    overflow: hidden;
+    grid-auto-rows: 300px;
+    
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+.tempregister {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    overflow: hidden;
+    grid-auto-rows: 350px;
+    
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+.templogin > div{
+    border-color: black;
+    padding: 50px;
+}
+.tempregister > div{
+    border-color: black;
+    padding: 50px;
+}
+
+.inputfield {
+    grid-row: 1/2;
+    text-align: center;
+    align-self: center;
+    border-color: red;
+    margin: 8px;
+    padding: 4px 8px;
+    border-style: dotted;
+    border-radius: 10px;
+}
+#submit, #submit1, #submit2{
+    grid-row: 1/2;
+    align-self: right;
+    text-align: right;
+    justify-items: right;
+    margin: 8px;
+    color: blue;
+    border: 2px dotted blue;
+    padding: 4px 8px;
+    border-radius: 7px;  
+    cursor: pointer; 
+}
+
+#submit:active, #submit1:active, #submit2:active {
+    transform: scale(0.98);
+}
+#submit:disabled, #submit1:disabled, #submit2:disabled {
+    border: 2px dotted rgb(100, 100, 100);
+    color: rgb(100, 100, 100);
+    cursor: unset;
+}
+
+#close, #rclose{
+    padding: 6px;
+    box-shadow: 0px 0px 0px 0px red;
+    transition: box-shadow ease-in 0.1s;
+    border-radius: 10px;
+}
+#close:hover, #rclose:hover {
+    background-color: rgb(247, 120, 120);
+    box-shadow: 0 2px 4px 0 red, 0 3px 8px 0 red;
+}
+#close:active, #rclose:active {
+    background-color: red;
+    transform: scale(0.98);
+}
+
+.loginform {
+    box-shadow: 0 4px 8px 0 blueviolet, 0 6px 20px 0 blueviolet;
+    border-radius: 13px;
+}
+.registerform {
+    box-shadow: 0 4px 8px 0 blueviolet, 0 6px 20px 0 blueviolet;
+    border-radius: 13px;
+}
+
+
+/* STYLES OF HOME.HTML */
+#finddealer {
+    position: absolute;
+    right: 40px;
+    top: 20px;
+    cursor: pointer;
+    color: yellow;
+}
+#tog {
+    position: absolute;
+    right: 40px;
+    top: 58px;
+    cursor: pointer;
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 15px;
+  }
+  
+.slider.round:before {
+border-radius: 50%;
+}
+
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 42px;
+    height: 24px;
+  }
+  
+  .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgb(138, 136, 136);
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 17px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #f3280d;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #f3280d;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+  }
+
+
+#video{
+    width: 200px;
+    height: 140px;
+    background-color: transparent;
+    position: absolute;
+}
+
+#pause{
+    position: absolute;
+    right: 40px;
+    top: 104px;
+    cursor: pointer;
+    color: yellow;
+}
+#play{
+  position: absolute;
+  right: 40px;
+  top: 104px;
+  cursor: pointer;
+  color: yellow;
+}
+#mute{
+    position: absolute;
+    right: 40px;
+    top: 142px;
+    cursor: pointer;
+    color: yellow;
+}
+#unmute{
+    position: absolute;
+    right: 40px;
+    top: 142px;
+    cursor: pointer;
+    color: yellow;
+}

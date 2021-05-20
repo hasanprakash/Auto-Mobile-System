@@ -1,0 +1,931 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+
+    </style>
+    <meta charset="utf-8" />
+
+    <!-- Reference to the Bing Maps SDK -->
+    <!-- <script type='text/javascript'
+            src='http://www.bing.com/api/maps/mapcontrol?callback=GetMap&key=Avz640t_mi-yltJviwDzbK2C8oEHp2C9Lk_F7PDERrfRnA8dD6pTzLWiMjLSFh16' 
+            async defer></script> -->
+    <!-- <script type="text/javascript" 
+            src="http://maps.googleapis.com/maps/api/js?libraries=geometry&sensor=false"> 
+        </script> -->
+    <script type='text/javascript' src='http://www.bing.com/api/maps/mapcontrol?callback=loadMapScenario&branch=experimental&key=Avz640t_mi-yltJviwDzbK2C8oEHp2C9Lk_F7PDERrfRnA8dD6pTzLWiMjLSFh16' async defer></script>
+    <link rel="stylesheet" href="{% static 'assets/dealerstyles.css' %}" />
+    <link rel="shortcut icon" href="#">
+    <link rel="stylesheet" href="{% static 'assets/all.min.css' %}"/>
+    <script type='text/javascript'>
+        var infobox, map, pins;
+        // var tooltipTemplate = '<div style="background-color:white;height:20px;width:150px;padding:5px;text-align:center"><b>{title}</b></div>';
+    function GetMap()
+    {
+        var map = new Microsoft.Maps.Map('#myMap', {});
+        var array;
+
+        //Add your post map load code here.
+        map.setView({
+            credentials: 'Avz640t_mi-yltJviwDzbK2C8oEHp2C9Lk_F7PDERrfRnA8dD6pTzLWiMjLSFh16',
+            center: new Microsoft.Maps.Location(17.3850, 78.4867),
+            mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+            zoom: 10
+        });
+
+        var locs = [array , Mcrosoft.Maps.Location];
+        var rect = Microsoft.Maps.LocationRect.fromLocations(locs);
+
+        map.setView({ bounds: rect, padding: 80 });
+
+    }
+
+    function loadMapScenario() {
+                map = new Microsoft.Maps.Map(document.getElementById('myMap'), {});
+
+                // AUTO SUGGESTIONS
+                Microsoft.Maps.loadModule('Microsoft.Maps.AutoSuggest', function () {
+                    var manager = new Microsoft.Maps.AutosuggestManager({ map: map });
+                    manager.attachAutosuggest('#searchBox', '#searchBoxContainer', selectedSuggestion);
+                });
+
+                map.setView({
+                    credentials: 'Avz640t_mi-yltJviwDzbK2C8oEHp2C9Lk_F7PDERrfRnA8dD6pTzLWiMjLSFh16',
+                    center: new Microsoft.Maps.Location(17.3850, 78.4867),
+                    mapTypeId: Microsoft.Maps.MapTypeId.aerial,
+                    zoom: 12
+                });
+
+                // //PUSH PIN
+
+                // var center = map.getCenter();
+
+                // //Create custom Pushpin
+                // var pin = new Microsoft.Maps.Pushpin(center, {
+                //     title: 'Microsoft',
+                //     subTitle: 'City Center',
+                //     text: '1',
+                //     color: 'blue'
+                // });
+
+                // //Add the pushpin to the map
+                // map.entities.push(pin);
+
+
+                //POLILINE
+                var center = map.getCenter();
+
+                //Create array of locations
+                var coords = [center, new Microsoft.Maps.Location(center.latitude + 1, center.longitude + 1)];
+
+                //Create a polyline
+                var line = new Microsoft.Maps.Polyline(coords, {
+                    strokeColor: 'blue',
+                    strokeThickness: 3,
+                    strokeDashArray: [4, 4]
+                });
+
+                //Add the polyline to map
+                // map.entities.push(line);
+
+
+                // EXTERIOR RING
+                //Create array of locations to form a ring.
+                var exteriorRing = [
+                    center,
+                    new Microsoft.Maps.Location(center.latitude - 0.5, center.longitude - 1),
+                    new Microsoft.Maps.Location(center.latitude - 0.5, center.longitude + 1),
+                    center
+                ];
+
+                //Create a polygon
+                var polygon = new Microsoft.Maps.Polygon(exteriorRing, {
+                    fillColor: 'rgba(0, 255, 0, 0.5)',
+                    strokeColor: 'red',
+                    strokeThickness: 2
+                });
+
+                //Add the polygon to map
+                // map.entities.push(polygon);
+
+
+                // INFO BOX with MULTIPLE PINS
+                //Create an infobox that will render in the center of the map.
+                infobox = new Microsoft.Maps.Infobox(center, {
+                    // title: 'Map Center',
+                    // description: 'Seattle'
+                    visible:false,
+                    showCloseButton:false
+                });
+
+                //Assign the infobox to a map instance.
+                infobox.setMap(map);
+                
+                // CLUSTERING
+                // Microsoft.Maps.loadModule("Microsoft.Maps.Clustering", function () {
+
+                pins = [new Microsoft.Maps.Location(17.5169, 78.3428), new Microsoft.Maps.Location(16.5062, 80.6480), new Microsoft.Maps.Location(17.6868, 83.2185)];
+
+                //Create a ClusterLayer and add it to the map.
+                // clusterLayer = new Microsoft.Maps.ClusterLayer(pins);
+                // map.layers.insert(clusterLayer);
+                // });
+
+                for(var i=0;i<pins.length;i++) {
+                    var pin = new Microsoft.Maps.Pushpin(pins[i]);
+                    pin.metadata = {
+                        title: 'This is pin '+i,
+                        description: 'This is description of pin '+i
+                    };
+
+                    //Add a click event handler to the pushpin.
+                    Microsoft.Maps.Events.addHandler(pin, 'mouseover', pushpinHovered);
+                    Microsoft.Maps.Events.addHandler(pin, 'mouseout', closeTooltip);
+
+                    //Add pushpin to the map.
+                    // map.entities.push(pin);
+                }
+
+
+                // var pin = new Microsoft.Maps.Pushpin(center, {
+                //     title: 'Microsoft',
+                //     subTitle: 'City Center',
+                //     text: '1',
+                //     color: 'blue'
+                // });
+
+                // var pin = new Microsoft.Maps.Pushpin(center);
+                // pin.metadata = {
+                //     title: 'Microsoft',
+                //     // subTitle: 'City Center',
+                //     description:'The trillianior company',
+                //     text: '1',
+                //     color: 'blue'
+                // }
+
+
+                // Binding the events
+                Microsoft.Maps.Events.addHandler(map, 'click', function (e) { handleArgs('mapClick', e); });
+                Microsoft.Maps.Events.addHandler(map, 'rightclick', function (e) { handleArgs('mapRightclick', e); });
+                Microsoft.Maps.Events.addHandler(map, 'dblclick', function (e) { handleArgs('mapDoubleclick', e); });
+                Microsoft.Maps.Events.addHandler(map, 'mousewheel', function (e) { handleArgs('mapMousewheel', e); });
+                Microsoft.Maps.Events.addHandler(map, 'mousemove', function (e) { handleArgs('mapMousemove', e); });
+                Microsoft.Maps.Events.addHandler(map, 'mousedown', function (e) { handleArgs('mapMousedown', e); });
+                Microsoft.Maps.Events.addHandler(map, 'mouseout', function (e) { handleArgs('mapMouseout', e); });
+                Microsoft.Maps.Events.addHandler(map, 'mouseover', function (e) { handleArgs('mapMouseover', e); });
+                Microsoft.Maps.Events.addHandler(map, 'mouseup', function (e) { handleArgs('mapMouseup', e); });
+                // Setting up the printout panel
+                document.getElementById('printoutPanel').innerHTML =
+                    '<div id="mapClick">click</div>\
+                     <div id="mapRightclick">rightclick</div>\
+                     <div id="mapDoubleclick">dblclick</div>\
+                     <div id="mapMousewheel">mousewheel</div>\
+                     <div id="mapMousemove">mousemove</div>\
+                     <div id="mapMousedown">mousedown</div>\
+                     <div id="mapMouseout">mouseout</div>\
+                     <div id="mapMouseover">mouseover</div>\
+                     <div id="mapMouseup">mouseup</div>\
+                     <div>isPrimary: <span id="isPrimaryVal"></span></div>\
+                     <div>isSecondary: <span id="isSecondaryVal"></span></div>\
+                     <div>wheelDelta: <span id="wheelDeltaVal"></span></div>';
+                var highlights = {};
+                function highlight(id) {
+                    document.getElementById(id).style.background = 'skyblue';
+                    if (highlights[id]) {
+                        clearTimeout(highlights[id]);
+                    }
+                    highlights[id] = setTimeout(function () { document.getElementById(id).style.background = 'transparent'; }, 1000);
+                }
+                function showValue(id, value, defaultValue) {
+                    var strVal = (value || defaultValue).toString();
+                    document.getElementById(id).innerHTML = strVal;
+                }
+                function handleArgs(id, e) {
+                    highlight(id);
+                    showValue('isPrimaryVal', e.isPrimary, false);
+                    showValue('isSecondaryVal', e.isSecondary, false);
+                    showValue('wheelDeltaVal', e.wheelDelta, 0);
+                }
+        
+                
+    }
+
+    function pushpinHovered(e) {
+        //Make sure the infobox has metadata to display.
+        if (e.target.metadata) {
+            //Set the infobox options with the metadata of the pushpin.
+            infobox.setOptions({
+                location: e.target.getLocation(),
+                title: e.target.metadata.title,
+                description: e.target.metadata.description,
+                visible: true
+            });
+        }
+    }
+    function closeTooltip(e) {
+        infobox.setOptions({
+            visible:false
+        })
+    }
+
+    function selectedSuggestion(result) {
+        //Remove previously selected suggestions from the map.
+
+
+        //textarea
+        document.querySelector(".inputfield").addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        }, false);
+
+        map.entities.clear();
+
+        //Show the suggestion as a pushpin and center map over it.
+
+        var pin = new Microsoft.Maps.Pushpin(result.location);
+
+        // var point = new google.maps.LatLng(55.623151, 8.48215);
+        // var spherical = google.maps.geometry.spherical; 
+        // var north = spherical.computeOffset(point, 5000, 0); 
+        // var west  = spherical.computeOffset(point, 5000, -90); 
+        // var south = spherical.computeOffset(point, 5000, 180); 
+        // var east  = spherical.computeOffset(point, 5000, 90);
+
+        //Load the spatial math module
+        var loc = new Microsoft.Maps.Location(result.location.latitude, result.location.longitude);
+        Microsoft.Maps.loadModule("Microsoft.Maps.SpatialMath", function () {
+
+            // DELHI
+            var delhiloc = new Microsoft.Maps.Location(28.7041, 77.1025);
+            var delhipin = new Microsoft.Maps.Pushpin(delhiloc, {
+                color: 'red'
+            });
+
+            // WESTBENGAL
+            var westbengalloc = new Microsoft.Maps.Location(22.9868, 87.8550);
+            var westbengalpin = new Microsoft.Maps.Pushpin(westbengalloc, {
+                color: 'red'
+            });
+
+            // TAMILNADU
+            var tamilnaduloc = new Microsoft.Maps.Location(11.1271, 78.6569);
+            var tamilnadupin = new Microsoft.Maps.Pushpin(tamilnaduloc, {
+                color: 'red'
+            });
+
+            // KARNATAKA
+            var karnatakaloc = new Microsoft.Maps.Location(12.9716, 77.5946);
+            var karnatakapin = new Microsoft.Maps.Pushpin(karnatakaloc, {
+                color: 'red'
+            });
+
+            // TELANGANA
+            var telanganaloc = new Microsoft.Maps.Location(18.1124, 79.0193);
+            var telanganapin = new Microsoft.Maps.Pushpin(telanganaloc, {
+                color: 'red'
+            });
+            var alllocs = [delhiloc, westbengalloc, tamilnaduloc, karnatakaloc, telanganaloc];
+            // var allnames = ['DELHI', 'WESTBENGAL', 'TAMILNADU', 'KARNATAKA', 'TELANGANA'];
+            var allnames = ['showroomA', 'showroomB', 'showroomC', 'showroomD', 'showroomE'];
+            var afterlocs = [];
+            var allids = [];
+            var afterids = [];
+            var afternames = [];
+            var eles = []
+            var con = document.querySelector("#optscontainer");
+            for(let k=0;k<alllocs.length;k++) {
+                var dis = Microsoft.Maps.SpatialMath.getDistanceTo(alllocs[k], result.location, Microsoft.Maps.SpatialMath.DistanceUnits.Miles);
+                
+                var ele = document.createElement("div");
+                // con.appendChild(ele);   
+                ele.id = "s"+k.toString();
+                ele.name = allnames[k];
+                allids.push(ele.id);
+                if(dis<=250) {
+                    afterlocs.push(alllocs[k]);
+                    afterids.push(allids[k]);
+                    eles.push(ele);
+                }
+            }
+
+            console.log("near locations : ", afterlocs);
+            
+            con.innerHTML = "";
+            console.log(allids);
+            console.log(afterids);
+            for(let h=0;h<afterlocs.length;h++) {
+                // var ele = document.getElementById(afterids[h]);
+                // eles.push(ele);
+                // eles[h].className = "blocks";
+                // eles[h].id = "s" + h.toString();
+                // console.log(eles);
+                console.log(eles);
+                eles[h].className = "block";
+                
+                eles[h].onclick = function() {
+                    // alert("popup on click");
+                    console.log(eles[h].className, eles[h].id, h );
+                    var popupcmt = document.querySelector(".popup");
+                    popupcmt.classList.toggle('active');
+                    // document.querySelector("#info").innerHTML = "Class name is "+eles[h].className+"\nAnd Comment Section of id "+eles[h].id;
+
+
+
+                    // NEW CODE
+                    const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'seecomment' %}",
+                        data: {
+                            'storename':eles[h].id,
+                            'csrfmiddlewaretoken':csrf,
+                        },
+                        success: function(data) {
+                            var cmts = document.querySelector(".allcomments");
+                            cmts.innerHTML = "";
+                            var timenow = data['timenow'];
+                            console.log(data['year'], data['month'], data['day'], data['hour'], data['minute'], data['second']);
+                            $(cmts).append("<b id='cmtcount' style='font-size:20px'><span id='count'>"+String(data['count'])+"</span> Comment(s)..</b>");
+                            for(let q=data['obj'].length-1;q>=0;q--) {
+                                var time = data['obj'][q][1]
+                                var year = parseInt(time.slice(0, 4));
+                                var month = parseInt(time.slice(5, 7));
+                                var day = parseInt(time.slice(8, 10));
+                                var hour = parseInt(time.slice(11, 13));
+                                var minute = parseInt(time.slice(14, 16));
+                                var second = parseInt(time.slice(17, 19));
+                                // console.log(year, month, day, hour, minute, second);
+                                var noofseconds = (year-parseInt(data['year']))*31536000-(month-parseInt(data['month']))*2628000-(day-parseInt(data['day']))*86400+(parseInt(data['hour'])-hour)*3600+(parseInt(data['minute'])-minute)*60+(parseInt(data['second'])-second);
+                                // console.log(noofseconds);
+                                var timetoshow;
+                                if(noofseconds>=31536000)
+                                timetoshow = String(Math.floor(noofseconds/31536000))+ ' year(s) ago';
+                                else if(noofseconds>=2628000)
+                                timetoshow = String(Math.floor(noofseconds/2628000))+ ' month(s) age';
+                                else if(noofseconds>=86400)
+                                timetoshow = String(Math.floor(noofseconds/86400))+ ' day(s) ago';
+                                else if(noofseconds>=3600) {
+                                timetoshow = String(Math.floor(noofseconds/3600))+ ' hour(s) ago';
+                                // console.log(data['hour'], hour);
+                                }
+                                else if(noofseconds>=60)
+                                timetoshow = String(Math.floor(noofseconds/60))+ ' minute(s) ago';
+                                else
+                                timetoshow = String(Math.floor(noofseconds/1))+ ' second(s) ago';
+                                $(cmts).append(
+                                    "<div style='white-space: nowrap;'><p><b>"+data['obj'][q][0]+"</b>"+" &bull; "+ timetoshow +"<span id='noofvotes"+ data['obj'][q][5] +"' style='float: right; margin-right: 10px; font-size: 25px;'>"+ data['obj'][q][3] +"</span>"+"</p></div>"+
+                                    "&emsp;&emsp;" +data['obj'][q][2] + "<br>"+
+                                    "&emsp;&emsp;"
+                                    
+                                ); 
+                                // "<i id='upvote"+ data['obj'][q][5] +"' onclick='upvotetest("+ data['obj'][q][5] +")' class='far fa-arrow-alt-circle-up'></i>"+
+                                // "&emsp;"+
+                                // "<i id='downvote"+ data['obj'][q][5] +"' onclick='downvotetest("+ data['obj'][q][5] +")' class='far fa-arrow-alt-circle-down'></i>"+
+                                // "<br>"
+                                if(data['upvote'][data['obj'][q][5]] == 1) {
+                                    $(cmts).append(
+                                        "<i id='upvote"+ data['obj'][q][5] +"' onclick='upvotetest("+ data['obj'][q][5] +")' class='fas fa-arrow-alt-circle-up'></i>"+"&emsp;"
+                                    );
+                                }
+                                else {
+                                    $(cmts).append(
+                                        "<i id='upvote"+ data['obj'][q][5] +"' onclick='upvotetest("+ data['obj'][q][5] +")' class='far fa-arrow-alt-circle-up'></i>"+"&emsp;"
+                                    );
+                                }
+                                if(data['downvote'][data['obj'][q][5]] == 1) {
+                                    $(cmts).append(
+                                        "<i id='downvote"+ data['obj'][q][5] +"' onclick='downvotetest("+ data['obj'][q][5] +")' class='fas fa-arrow-alt-circle-down'></i>"+"<br>"
+                                    );
+                                }
+                                else {
+                                    $(cmts).append(
+                                        "<i id='downvote"+ data['obj'][q][5] +"' onclick='downvotetest("+ data['obj'][q][5] +")' class='far fa-arrow-alt-circle-down'></i>"+"<br>"
+                                    );
+                                }
+
+                                $(document.querySelector("#uparrow")).className = "far fa-arrow-alt-circle-up";
+                            }
+                            // console.log(data['maxvalue'][0], data['maxvalue'][1], data['maxvalue'][2])
+                            if(data['maxvalue']!=null) {
+                            $("#parttwo").html(
+                                "<div class='parttwo'>"+
+                                "<span style='margin: 20px;'><b>"+ data['maxvalue'][0] +"</b> &bull; "+ data['maxvalue'][1]+ " vote(s)" +"</span><br>"+
+                                " \"" +data['maxvalue'][2] + "\" </div><br>"
+                            );
+                            }
+
+                        },
+                        error: function(data) {
+                            console.log("Error Alert");
+                            console.log(data);
+
+                        }
+                    })
+
+
+
+
+                    // popupcmt.innerHTML = "Class name is "+eles[h].className+"\nAnd Comment Section of id "+eles[h].id + popupcmt.innerHTML;
+                    document.querySelector("#lifesaver").value = eles[h].id;
+
+                    var allcomments = document.querySelectorAll(".comment");
+                    for(let x=0;x<allcomments.length;x++) {
+                        if(eles[h].id == allcomments[x].id) {
+                            allcomments[x].style.display = 'block';
+                        }
+                        else {
+                            allcomments[x].style.display = 'none';
+                        }
+                    }
+                    var state = eles[h].name;
+                    if(state == "showroomE")
+                    document.querySelector("#gotodetails").href="{% url 'contactinfo' state='showroomE' %}";
+                    else if(state == "showroomA")
+                    document.querySelector("#gotodetails").href="{% url 'contactinfo' state='showroomA' %}";
+                    else if(state == "showroomB")
+                    document.querySelector("#gotodetails").href="{% url 'contactinfo' state='showroomB' %}";
+                    else if(state == "showroomC")
+                    document.querySelector("#gotodetails").href="{% url 'contactinfo' state='showroomC' %}";
+                    else if(state == "showroomD")
+                    document.querySelector("#gotodetails").href="{% url 'contactinfo' state='showroomD' %}";
+                };
+                // ele.addEventListener("click", popupmenu(ele.id));
+                // var div = document.createElement('div');
+                // con.append(div);
+                // div.className = "divblock";
+                eles[h].innerHTML = eles[h].name +"<br>(" + afterlocs[h].latitude +" "+ afterlocs[h].longitude +")";
+                // div.innerHTML = afterlocs[h].toString() + "<br>" +"I am Hasan";
+
+                con.appendChild(eles[h]);
+
+            }
+        
+            map.entities.push(delhipin);
+            map.entities.push(westbengalpin);
+            map.entities.push(tamilnadupin);
+            map.entities.push(karnatakapin);
+            map.entities.push(telanganapin);
+            var todelhi = Microsoft.Maps.SpatialMath.getDistanceTo(delhiloc, result.location, Microsoft.Maps.SpatialMath.DistanceUnits.Miles);
+            console.log(todelhi);
+
+            // navigator.geolocation.getCurrentPosition(function (position) {
+                // loc = new Microsoft.Maps.Location(result.location.latitude, result.location.longitude);
+
+                var lat = result.location.latitude;
+                var long = result.location.longitude;
+                var array = [result.location, new Microsoft.Maps.Location(lat+0.1, long)];
+                var northpoly = new Microsoft.Maps.Polyline(array, {
+                    strokeColor:'blue',
+                    strokeThickness:3
+                })
+                // map.entities.push(northpoly);
+                var north = Microsoft.Maps.SpatialMath.getLocationAlongPath(northpoly, 0.5, Microsoft.Maps.SpatialMath.DistanceUnits.Miles);
+                console.log(lat, long, array, northpoly, north);
+                var northpin = new Microsoft.Maps.Pushpin(north, {
+                    title: 'I hope Its a northpin'
+                });
+
+                // CALCULATION STARTS HERE
+
+                var polilines = []
+                var pushpins = []
+                var y1, y2;
+                var temp1;
+                var temp2;
+                console.log("center = ", lat, "and ", long);
+                for(var x = long-3.872982765+0.00000000001;x<=long+3.872982765;x=x+0.04) {
+                    // console.log("error : ", -x*x+(2*x*long)-(long*long)+15);
+                    y1 = lat+Math.sqrt(-x*x+(2*x*long)-(long*long)+15)
+                    y2 = lat-Math.sqrt(-x*x+(2*x*long)-(long*long)+15)
+                    // console.log(x, y1);
+                    // console.log(x, y2);
+                    var temp1 = new Microsoft.Maps.Polyline([result.location, new Microsoft.Maps.Location(y1, x)], {
+                        strokeColor:'blue',
+                        strokeThickness:3
+                    });
+                    var temp2 = new Microsoft.Maps.Polyline([result.location, new Microsoft.Maps.Location(y2, x)], {
+                        strokeColor:'blue',
+                        strokeThickness:3
+                    });
+                    polilines.push(temp1);
+                    polilines.push(temp2);
+                }
+
+                //MANUAL POLYLINE
+                var extrapoly = new Microsoft.Maps.Polyline([result.location, new Microsoft.Maps.Location(result.location.latitude, result.location.longitude+3.872982765)]);
+
+                // map.entities.push(polilines);
+                hasanprakash = []
+                hasan1 = []
+                hasan2 = []
+                for(var j=0;j<polilines.length;j++) {
+                    var t = Microsoft.Maps.SpatialMath.getLocationAlongPath(polilines[j], 250, Microsoft.Maps.SpatialMath.DistanceUnits.Miles);
+                    if(j%2==1)
+                    hasanprakash.push(t);
+                    else
+                    hasan2.push(t);
+                    var t1 = new Microsoft.Maps.Pushpin(t, {
+                        // title: 'I hope Its a northpin'
+                    });
+                    pushpins.push(t1);
+                }
+
+                //MANUAL POINT
+                hasan2.push(Microsoft.Maps.SpatialMath.getLocationAlongPath(extrapoly, 250, Microsoft.Maps.SpatialMath.DistanceUnits.Miles));
+            
+                // TO GET ALL PUSHPINS ACROSS THE CIRCUMFERENCE
+                // map.entities.push(pushpins);
+
+                // for(let k=0;k<hasan2.length;k++) 
+                // hasanprakash.push(hasan2[k]);
+                for(let k=hasan2.length-1;k>=0;k--) 
+                hasanprakash.push(hasan2[k]);
+
+                // console.log(hasanprakash);
+                var hasan = [new Microsoft.Maps.Location(16.542, 80.534), new Microsoft.Maps.Location(16.511, 80.529), new Microsoft.Maps.Location(16.480, 80.534)];
+                // var hasan = [new Microsoft.Maps.Location(16.542, 80.534), new Microsoft.Maps.Location(16.511, 80.529), new Microsoft.Maps.Location(16.480, 80.534)];
+                var prakash = new Microsoft.Maps.Polyline(hasanprakash, {
+                    strokeColor: 'blue',
+                    strokeThickness: 3,
+                });
+                map.entities.push(prakash)
+
+
+
+
+                // map.entities.push(northpin);
+
+                //Create an accuracy circle
+                // console.log(position.coords.accuracy, loc);
+                var path1 = Microsoft.Maps.SpatialMath.getRegularPolygon(new Microsoft.Maps.Location(result.location.latitude, result.location.longitude), 5000, 36,  Microsoft.Maps.SpatialMath.Meters);
+                var poly1 = new Microsoft.Maps.Polygon(path1);
+                map.entities.push(poly1);
+
+                //Add a pushpin at the user's location.
+                // var pinn = new Microsoft.Maps.Pushpin(loc);
+                // map.entities.push(pinn);
+
+                //Center the map on the user's location.
+                // map.setView({ center: loc, zoom: 17 });
+
+                // CONSOLE LOGS
+                // console.log("I think this msg willnot appear");
+                // console.log(polilines);
+                // console.log(pushpins);
+            });
+            
+            // var bounds = map.getBounds();
+            // console.log("Its working");
+            // var northWest = bounds.getNorthwest();
+            // var southEast = bounds.getSoutheast();
+            // console.log(bounds, northWest, southEast);
+            // // var South = bounds.getSouth();
+
+            // //Calculate a geodesic path between the two points (line that follows the curvature of the earth).
+            // var path = Microsoft.Maps.SpatialMath.getGeodesicPath([northWest, southEast]);
+            // var poly = new Microsoft.Maps.Polyline(path);
+            // map.entities.push(poly);
+
+            // //Calculate a location that is along the path 300 miles from the north west coordinate.
+            // var point300MilesFromNW = Microsoft.Maps.SpatialMath.getLocationAlongPath(poly, 300, Microsoft.Maps.SpatialMath.DistanceUnits.Miles);
+            // var pin2 = new Microsoft.Maps.Pushpin(point300MilesFromNW, {
+            //     title: '300 miles from NW'
+            // });
+            // map.entities.push(pin2);
+
+        // });
+
+        document.querySelector("#closebutton").onclick = function() {
+            document.querySelector(".popup").classList.toggle('active');
+        }
+        
+        map.entities.push(pin);
+        // map.setView({ bounds: result.bestView, zoom: 3 });
+        map.setView({center:result.location, zoom: 6});
+
+        
+    }
+
+
+
+
+    function popupmenu(id) {
+        alert("hi", id);
+        console.log(id);
+    }
+    
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            display: grid;
+            grid-template-columns: 30% 70%;
+        }
+        .divblock{
+            margin: 10px;
+            background-color: grey;
+            padding: 10px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="optscontainer">
+        <h2 class="testing"></h2>
+    </div>
+    <div> 
+        <div id="myMap" style="position:relative;width:100%;height:100vh;"></div>
+        <div id='searchBoxContainer' style="position: absolute; top: 2%; left: 32%;">
+            <input type='text' id='searchBox'/>
+        </div>
+        <div id='printoutPanel'></div>
+    </div>
+
+    <div class="popup">
+        <div id="partone">
+            <!-- <button id="closebutton">CLOSE</button> -->
+            <i class="fas fa-times" id="closebutton" style="float: left; margin: 15px;"></i><br>
+            <a name="hasanprakash" id="gotodetails">DETAILS</a>
+            <p id="info"></p>
+            <div class="forms">
+                <form method="post" id="update" onsubmit="return false;" action="{% url 'addcomment' %}" >
+                    {% csrf_token %}
+                    <input type="text" name="lifesaver" id="lifesaver" style="display: none;"/>
+                    {{ message }}
+                    <p>Enter Your Comment Here</p>
+                    {{ cmtform }}
+                    <!-- <input id="btn" type="submit" class="fas fa-plus-square" value="Add Comment"/> -->
+                    <!-- <i id="btn" type="submit" class="fas fa-plus-square"></i> -->
+                    <button id="btn" type="submit"><b>+</b></button>
+                </form>
+                <!-- <div class="c"> -->
+                <div id="allcomments" class="allcomments">
+                    
+                </div>
+                <!-- </div> -->
+            </div>
+            
+        </div>
+        <div id="parttwo">
+            Comment with highest upvotes
+        </div>
+        
+    </div>
+    <!-- <div class="logout">
+        <a href="{% url 'logout' %}">LOGOUT</a>
+    </div> -->
+        
+    <!-- <div id='myMap' style='width: 100vw; height: 100vh;'></div> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+
+
+        //Start of previous Code
+
+        // $(document).on('submit', '#update', function(e) {
+        //     // console.log($('#cmt').val());
+        //     var lifesaver = $('#lifesaver').val();
+        //     console.log($('#csrfmiddlewaretoken'));
+        //     const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "{% url 'ajaxcomment' %}",
+        //         data: {
+        //             'cmt': $('#cmt').val(),
+        //             'csrfmiddlewaretoken':csrf,
+        //             'lifesaver': lifesaver
+        //         },
+        //         success: function(data) {
+        //             var toy;
+        //             console.log("hello");
+        //             if(lifesaver == 's0')
+        //             toy = document.querySelectorAll("#s0")[1];
+        //             else if(lifesaver == 's1')
+        //             toy = document.querySelectorAll("#s1")[1];
+        //             else if(lifesaver == 's2')
+        //             toy = document.querySelectorAll("#s2")[1];
+        //             else if(lifesaver == 's3')
+        //             toy = document.querySelectorAll("#s3")[1];
+        //             else if(lifesaver == 's4')
+        //             toy = document.querySelectorAll("#s4")[1];
+        //             // $(toy).append(
+        //             //     "<div style='white-space: nowrap;'><p><b>"+data['username']+"</b>"+"&bull;"+ data['date'] +"</p></div>"+
+        //             //     "&emsp;&emsp;" +data['cmt']
+        //             // );
+        //             $(toy).prepend(
+        //                 "<div style='white-space: nowrap;'><p><b>"+data['username']+"</b>"+" &bull; "+ data['date'] +"</p></div>"+
+        //                 "&emsp;&emsp;" +data['cmt']
+        //             );
+                    
+                    
+        //             // var division = document.createElement('div');
+        //             // division.className = 'comment';
+        //             // division.append(document.createElement('p').append(document.createElement('b').innerHTML=data['username']))
+                    
+                    
+        //             // "<tr><td>" + priceType + "</td><td>" + priceName + "</td><td>" + priceProduct + "</td><td>" + priceValue + "</td></tr>"
+                        
+        //                 // "<div style='white-space: nowrap;'><p><b>"+data['username']+"</b>"+"&bull;"+ data['date'] +"</p></div>"+
+        //                 // "&emsp;&emsp;" +data['cmt']
+        //             //)
+
+        //             // $.each(data, function (key, value) {
+        //             //     console.log(key, value)
+        //             //     var priceKey = key;
+        //             //     var user = value.user;
+        //             //     var date = value.date;
+        //             //     var s3 = value.s3;
+                        
+        //             //     $("#s3").append(
+        //             //         // "<tr><td>" + priceType + "</td><td>" + priceName + "</td><td>" + priceProduct + "</td><td>" + priceValue + "</td></tr>"
+        //             //         "<div style='white-space: nowrap;'><p><b>"+user+"</b>"+"&bull;"+ date +"</p></div>"+
+        //             //         "&emsp;&emsp;" +s3
+        //             //     )
+        //             // })
+        //         },
+        //         error: function(data) {
+        //             console.log("error");
+        //             console.log(data);
+        //             // alert(data);
+        //         }
+        //     })
+        //     document.querySelector("#cmt").value = "";
+        // });
+        
+        // End Of Previous Code
+
+
+        var downvoteid, upvoteid;
+        function downvotetest(id) {
+            calldownvote(id);
+        }
+        function upvotetest(id){
+            callupvote(id);
+        }
+
+        // $(document).on('onclick', '#upnot', function(e) {
+        // document.getElementById(id).onclick = function(e) {
+        function callupvote(id) {
+            const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+            // console.log(id);
+            var votechange;
+            var v = document.getElementById("noofvotes"+id);
+            var icon = document.getElementById("upvote"+id);
+            if(icon.className == "fas fa-arrow-alt-circle-up") {
+                icon.className = "far fa-arrow-alt-circle-up";
+                v.innerHTML = parseInt(v.innerHTML) - 1;
+                votechange = -1;
+            }
+            else {
+                var downicon = document.getElementById("downvote"+id);
+                if(downicon.className == "fas fa-arrow-alt-circle-down") {
+                    icon.className = "fas fa-arrow-alt-circle-up";
+                    downicon.className = "far fa-arrow-alt-circle-down";
+                    v.innerHTML = parseInt(v.innerHTML) + 2;
+                    votechange = 2;
+                }
+                else {
+                    icon.className = "fas fa-arrow-alt-circle-up";
+                    v.innerHTML = parseInt(v.innerHTML)+1;
+                    votechange = 1;
+                }
+            }
+            var isupvoted;
+            if(icon.className == "fas fa-arrow-alt-circle-up")
+            isupvoted = true;
+            else
+            isupvoted = false;
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'upvote' %}",
+                data: {
+                    'isupvoted': isupvoted, 
+                    'isdownvoted': false,
+                    'commentid': id,
+                    'votes': v.innerHTML,
+                    'csrfmiddlewaretoken': csrf,
+                    'votechange': votechange
+                },
+                success: function(data) {
+                    
+                },
+                error: function(data) {
+                    console.log("error");
+                    console.log(data);
+                }
+            })
+        };
+
+        function calldownvote(id) {
+            const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+            // console.log(id);
+            var votechange;
+            var v = document.getElementById("noofvotes"+id);
+            var icon = document.getElementById("downvote"+id);
+            if(icon.className == "fas fa-arrow-alt-circle-down") {
+                icon.className = "far fa-arrow-alt-circle-down";
+                v.innerHTML = parseInt(v.innerHTML) + 1;
+                votechange = 1;
+            }
+            else {
+                var upicon = document.getElementById("upvote"+id);
+                if(upicon.className == "fas fa-arrow-alt-circle-up") {
+                    upicon.className = "far fa-arrow-alt-circle-up";
+                    v.innerHTML = parseInt(v.innerHTML) - 2;
+                    icon.className = "fas fa-arrow-alt-circle-down";
+                    votechange = -2;
+                }
+                else {
+                icon.className = "fas fa-arrow-alt-circle-down";
+                v.innerHTML = parseInt(v.innerHTML)-1;
+                votechange = -1;
+                }
+            }
+            var isdownvoted;
+            if(icon.className == "fas fa-arrow-alt-circle-down")
+            isdownvoted = true;
+            else
+            isdownvoted = false;
+
+            $.ajax({
+                type: "POST",
+                url: "{% url 'upvote' %}",
+                data: {
+                    'isupvoted': false,
+                    'isdownvoted': isdownvoted,
+                    'commentid': id,
+                    'votes': v.innerHTML,
+                    'csrfmiddlewaretoken': csrf,
+                    'votechange': votechange
+                },
+                success: function(data) {
+                    
+                },
+                error: function(data) {
+                    console.log("error");
+                    console.log(data);
+                }
+            })
+        } 
+        
+
+        //NEW CODE
+
+
+        $(document).on('submit', '#update', function(e) {
+            var lifesaver = $('#lifesaver').val();
+            console.log($('#csrfmiddlewaretoken'));
+            const csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+            $.ajax({
+                type: "POST",
+                url: "{% url 'addcomment' %}",
+                data: {
+                    'cmt': $('#cmt').val(),
+                    'csrfmiddlewaretoken':csrf,
+                    'storename': lifesaver,
+                    'votes': 0
+                },
+                success: function(data) {
+                    
+                    var cmtcount = document.getElementById("cmtcount");
+                    var count = document.getElementById("count");
+                    var counttoadd = parseInt(count.innerHTML)+1;
+                    cmtcount.innerHTML = "";
+                    $("#allcomments").prepend(
+                            "<b id='cmtcount' style='font-size:20px'><span id='count'>"+0+"</span> Comment(s)..</b>"+   
+                            "<div style='white-space: nowrap;'><p><b>"+data['user']+"</b>"+" &bull; "+ "0 second(s) ago" +"<span id='noofvotes"+ data['id'] +"' style='float: right; margin-right: 10px; font-size: 25px;'>"+ data['votes'] +"</span>"+"</p></div>"+
+                            "&emsp;&emsp;" +data['cmt'] + "<br>"+
+                            "&emsp;&emsp;"+
+                            "<i id='upvote"+ data['id'] +"' onclick='upvotetest("+ data['id'] +")' class='far fa-arrow-alt-circle-up'></i>"+
+                            "&emsp;"+
+                            "<i id='downvote"+ data['id'] +"' onclick='downvotetest("+ data['id'] +")' class='far fa-arrow-alt-circle-down'></i>"+
+                            "<br>"
+
+                    );
+                    var count1 = document.getElementById("count");
+                    count1.innerHTML = counttoadd;
+                    document.querySelector("#cmt").value = "";
+                    
+                },
+                error: function(data) {
+                    console.log("ERROR");
+                    console.log(data);
+                }
+            });
+        });
+
+        
+    </script>
+</body>
+
+</html>

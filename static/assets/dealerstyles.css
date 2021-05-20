@@ -1,0 +1,173 @@
+body, html {
+    margin: 0%;
+    padding: 0%;
+    font-family: Cyber;
+}
+@font-face {
+    font-family: Cyber;
+    src: url("https://assets.codepen.io/605876/Blender-Pro-Bold.otf");
+    font-display: swap;
+}
+.block{
+    background-color: skyblue;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px 10px;
+    text-align: center;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    cursor: pointer;
+}
+
+.popup {
+    width: 100%;
+    height: 0%;
+    position: absolute;
+    left: 0%;
+    bottom: 0%;
+    color: white;
+    /* background-color: lightseagreen; */
+    background-color: #27397A;
+    transition: height 0.4s ease-out;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    /* text-align: center; */
+}
+
+.popup.active {
+    height: 100%;
+    transition: height 0.4s ease-in;
+}
+#cmt{
+    color: white;
+}
+#partone{
+    /* border: 2px solid blue; */
+    overflow: auto;
+    grid-auto-rows: 100vh;
+}
+#parttwo{
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    align-self: center;
+}
+.parttwo{
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    align-self: center;
+    font-size: 30px;
+    
+}
+#printoutPanel{
+    position: absolute;
+    bottom: 3%;
+    right: 3%;
+}
+.comment{
+    /* margin: 30px; */
+    color: green;
+    float: left;
+    text-align: left;
+    overflow: auto;
+    height: 65vh;
+    width: 100vh;
+    border: 2px solid black;
+}
+.c {
+    overflow: auto;
+    width: 100vh;
+    min-height: 65vh;
+    border: 2px solid red;
+}
+/* .allcomments {
+    overflow: auto;
+    width: 100vh;
+    height: 65vh;
+    border: 2px solid red;
+} */
+.forms{
+    overflow: auto;
+}
+form{
+    margin-left: 30px;
+    overflow: auto;
+}
+.logout{
+    position: absolute;
+    top: 2%;
+    left: 2%;
+}
+.logout > a{
+    color: red;
+    text-decoration: none;
+}
+.inputfield{
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1.5px solid white;
+    background-color: transparent;
+    margin-right: 40px;
+    width: 90%;
+    min-height: 1%;
+    max-height: 50px;
+    resize:vertical;
+    padding: 4px;
+    margin-bottom: 10px;
+}
+#btn{
+    width: 30px;
+    height: 30px;
+    font-size: 21px;
+    margin-bottom: 10px;
+    float: right;
+    margin-right: 25px;
+    color: #27397A;
+}
+#gotodetails{
+    position:absolute;
+    right: 8%;
+    bottom: 15%;
+    text-decoration: none;
+    color:white;
+    border: 2px solid white;
+    padding: 5px 10px;
+}
+#gotodetails:active{
+    color:#27397A;
+    background-color: white;
+}
+
+/* .forms{
+    position: absolute;
+    top: 0%;
+    width: 100%;
+} */
+
+i{
+    font-size: 22px;    
+    margin-top: 15px;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+#addcmt{
+    margin-top: -15px;
+    margin-bottom: -15px;
+    margin-left: -10px;
+    font-size: 25px;
+    color: #27397A;
+}
+
+#closebutton{
+    transform: scale(1);
+    transition: transform ease-out 0.1s;
+}
+#closebutton:active {
+    transform: scale(0.65);
+}

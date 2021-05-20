@@ -1,0 +1,623 @@
+{% load static %}
+<html lang="en">
+    <head>
+        <title>SDP-2</title>
+        <link rel="shortcut icon" href="#">
+        <link rel="stylesheet" href="{% static 'assets/testing.css' %}"/>
+        <style>
+            html, body{
+                margin: 0;
+                padding: 0;
+            }
+            .container{
+                position: absolute;
+                /* width: 100%;
+                height: 100%; */
+                top: 10%;
+                right: 10%;
+            }
+        </style>
+        <script type="text/javascript" src="{% static 'assets/js/testing.js' %}"></script>
+    </head>
+    <body>
+        <script type="module">
+            import * as THREE from '../static/assets/3dmodeljsfiles/three.module.js';
+            import { OrbitControls } from "https://threejs.org/examples/jsm/controls/OrbitControls.js";
+            import { GLTFLoader } from '../static/assets/three/GLTFLoader.js';
+            import { RoomEnvironment } from '../static/assets/3dmodeljsfiles/RoomEnvironment.js';
+            
+            var camera, renderer, scene;
+            var cube, uvsphere, echosphere, cone, cylinder, torus;
+            const loader = new GLTFLoader().setPath('../static/assets/3dmodels/');
+            const testloader = new GLTFLoader().setPath('../static/assets/3dmodels/');
+            const test = new GLTFLoader().setPath('../static/assets/3dmodels/parts/exhaust/');
+            var bodyMaterial, detailsMaterial, interiorMaterial;
+            var bodyColorInput, detailsColorInput, interiorColorInput;
+            var rimfl, rimfr, rimrl, rimrr;
+            var rimflGeometry, rimfrGeometry, rimrlGeometry, rimrrGeometry;
+
+            scene = new THREE.Scene();
+            init();
+            animate();
+
+            function init() {
+                var prices = {
+                    'red': 30000,
+                    'blue': 40000,
+                    'black': 45000,
+                    'white': 35000,
+                    'tomato': 10000,
+                    'turquoise': 2000,
+                    'violet': -10000,
+                    'green': 5000,
+                    'grey': 45000,
+                    'red1': -20000,
+                    'blue1': -22000,
+                    'black1': 15000,
+                    'white1': 5000,
+                    'black2': 18000,
+                    'white2': 18000,
+                    'V12': 2520130,
+                    'V10': 2218280,
+                    'V8': 2060260,
+                    'rim1': 713000,
+                    'rim2': 692000,
+                    'rim3': 620000,
+                    'spoiler1': 128000,
+                    'spoiler2': 368000,
+                    'spoiler3': 513008,
+                    'spoiler4': 626888,
+                    'cc': 30000,
+                    'dc': 5000,
+                    'ic': 18000,
+                    'et': 2280280,
+                    'r': 620000,
+                    's': 626888
+                }
+
+                
+                var container = document.createElement("div");
+                document.body.append(container);
+                camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.25, 5000 );
+                camera.position.set(0, 8, 22);
+
+                renderer = new THREE.WebGLRenderer( { antialias: true } );
+                renderer.setPixelRatio( window.devicePixelRatio );
+                renderer.setSize( window.innerWidth, window.innerHeight );
+                container.appendChild( renderer.domElement );
+
+                const environment = new RoomEnvironment();
+                const pmremGenerator = new THREE.PMREMGenerator( renderer );
+
+                scene.environment = pmremGenerator.fromScene( environment ).texture;
+
+                scene.background = new THREE.Color( 0x082c6c );                
+
+
+                testloader.load('finallambo1.glb', function(gltf) {
+                    // gltf.scene.traverse(function(child) {
+                    //     if(child.name == "Scene") {
+                    //         console.log(child);
+                    //         cube = child;
+                    //     }
+                    // });
+                    gltf.scene.traverse(function (child) {
+
+                        if(child.isMesh) {
+                        child.castShadow = true;
+                        }
+                        if(child.name == "Plane")
+                        child.receiveShadow = true;
+                        if(child.name == "Plane001")
+                        child.castShadow = true;
+                        if(child.name == "Scene")
+                        cube = child;
+
+                    });
+                    console.log(cube);
+
+                    cube.scale.set(2, 2, 2); 
+                    scene.add(cube);
+                    cube.getObjectByName('Hood_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Body_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Front_Bumper_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Left_Door001_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Right_Door_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Trunk_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Rear_Bumper_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Doorsit_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Seats_Interior_Body_Colour_0').material = bodyMaterial;
+                    cube.getObjectByName('Rear_Left_Brake_Caliper_Calipers_0').material = bodyMaterial;
+
+                    cube.getObjectByName('Front_Bumper_Carbon_Fiber_0').material = detailsMaterial;
+                    cube.getObjectByName('Front_Left_WHeel_Rim_0').material = detailsMaterial;
+                    cube.getObjectByName('Front_Right_Wheel_Rim_0').material = detailsMaterial;
+                    cube.getObjectByName('Rear_Left_Wheel_Rim_0').material = detailsMaterial;
+                    cube.getObjectByName('Rear_Right_Wheel_Rim_0').material = detailsMaterial;
+                    cube.getObjectByName('Body_Grille_0').material = detailsMaterial;
+                    cube.getObjectByName('Rear_Bumper_Carbon_Fiber_0').material = detailsMaterial;
+
+                    cube.getObjectByName('Seats_Carbon_Fiber_0').material = interiorMaterial;
+                    cube.getObjectByName('Seats_Seat_Belt_0').material = interiorMaterial;
+                    cube.getObjectByName('Seats_Metal_0').material = interiorMaterial;
+                    cube.getObjectByName('Seats_Seat_0').material = interiorMaterial;
+                    cube.getObjectByName('Interior_Leather_0').material = interiorMaterial;
+                    cube.getObjectByName('Interior_Interior_0').material = interiorMaterial;
+                    cube.getObjectByName('Right_Door_Leather_0').material = interiorMaterial;
+                    cube.getObjectByName('Left_Door001_Leather_0').material = interiorMaterial;
+                    // console.log("Hello ", bodyMaterial);
+
+                });
+
+
+                
+                
+                // CAR PRICE LIMITING PART
+                var plimit = 56500000;
+                var lim = document.getElementById("vol");
+                var totalcost = document.getElementById("cost");
+                lim.onchange = function() {
+                    plimit = lim.value;
+                    if(lim.value < parseInt(totalcost.innerHTML)) {
+                        totalcost.style.color = 'red';
+                    }
+                    else{
+                        totalcost.style.color = 'yellow';
+                    }
+                    document.getElementById("totalpricelimit").innerHTML = plimit;
+                    document.getElementById("cost1").innerHTML = document.getElementById("vol").value;
+                }
+
+                var carcolor = document.querySelectorAll(".slideblock");
+
+                //material
+
+                // carcolor.forEach(function(ele) {
+                //     console.log(ele);
+                // });
+                bodyMaterial = new THREE.MeshPhysicalMaterial( {
+                    color: 0xff0000, metalness: 0.6, roughness: 0.4, clearcoat: 0.05, clearcoatRoughness: 0.05
+                } );
+
+                detailsMaterial = new THREE.MeshStandardMaterial( {
+                    color: 0xffffff, metalness: 1.0, roughness: 0.5
+                } );
+                interiorMaterial = new THREE.MeshStandardMaterial( {
+                    color: 0xD4D4D4, metalness: 0.3, roughness: 0.7, clearcoat: 0.05, clearcoatRoughness: 0.05
+                });
+                
+                var cost = document.querySelector("#cost");
+                var defaultprice = document.querySelector("#defaultprice");
+                for(let i=0;i<carcolor.length;i++) {
+                    let id = carcolor[i].id;
+                    carcolor[i].onclick = function() {
+                        // console.log(carcolor[i].id);
+                        // console.log(carcolor[i].parentNode.className);
+                        
+                        if(carcolor[i].parentNode.className == "carcolor") {
+                                bodyColorInput = document.getElementById( carcolor[i].id );
+                                
+                                bodyMaterial.color.set( carcolor[i].id );
+                                document.querySelector("#cc").innerHTML = carcolor[i].id;
+                                prices['cc'] = prices[carcolor[i].id];
+                                cost.innerHTML = parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'];
+                                if(parseInt(defaultprice.innerHTML)+prices[carcolor[i].id]+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'] <= plimit) {
+                                    cost.style.color = 'yellow';
+                                }
+                                else{
+                                    cost.style.color = 'red';
+                                    alert("your total cost is limited to "+ plimit +"/-");
+                                }
+                            updatecarcolor();
+                        }
+                        else if(carcolor[i].parentNode.className == "detailscolor") {
+                            detailsColorInput = document.getElementById( carcolor[i].id );
+                            
+                            
+                                detailsMaterial.color.set( carcolor[i].id.slice(0, -1) );
+                                document.querySelector("#dc").innerHTML = carcolor[i].id;
+                                prices['dc'] = prices[carcolor[i].id];
+                                cost.innerHTML = parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'];
+                            if(parseInt(defaultprice.innerHTML)+prices['cc']+prices[carcolor[i].id]+prices['ic']+prices['et']+prices['r']+prices['s'] <= plimit) {
+                                cost.style.color = 'yellow';
+                            }
+                            else{
+                                cost.style.color = 'red';
+                                alert("your total cost is limited to "+ plimit +"/-");
+                            }
+                            updatedetailscolor();
+                        }
+                        else if(carcolor[i].parentNode.className == "interiorcolor") {
+                            interiorColorInput = document.getElementById( carcolor[i].id );
+                            
+                            
+                                interiorMaterial.color.set( carcolor[i].id.slice(0, -1) );
+                                document.querySelector("#ic").innerHTML = carcolor[i].id;
+                                prices['ic'] = prices[carcolor[i].id];
+                                cost.innerHTML = parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'];
+                            if(parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices[carcolor[i].id]+prices['et']+prices['r']+prices['s'] <= plimit) {
+                                cost.style.color = 'yellow';
+                            }
+                            else{
+                                cost.style.color = 'red';
+                                alert("your total cost is limited to "+ plimit +"/-");
+                            }
+                            updateinteriorcolor();
+                        }
+                        else if(carcolor[i].parentNode.className == "engine") {
+                            
+                            
+                                document.querySelector("#et").innerHTML = carcolor[i].id;  
+                                prices['et'] = prices[carcolor[i].id];                          
+                                cost.innerHTML = parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'];
+                            if(parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices[carcolor[i].id]+prices['r']+prices['s'] <= plimit) {
+                                cost.style.color = 'yellow';
+                            }
+                            else{
+                                cost.style.color = 'red';
+                                alert("your total cost is limited to "+ plimit +"/-");
+                            }
+                        }
+                        else if(carcolor[i].parentNode.className == "rim") {
+                            
+                            loader.load('rims/'+carcolor[i].id+'/frontleft1.glb', function(gltf) {
+                                cube.getObjectByName('Front_Left_WHeel_Rim_0')['geometry'] = gltf.scene.getObjectByName('Front_Left_WHeel_Rim_0')['geometry'];
+                            });
+                            loader.load('rims/'+carcolor[i].id+'/frontright1.glb', function(gltf) {
+                                cube.getObjectByName('Front_Right_Wheel_Rim_0')['geometry'] = gltf.scene.getObjectByName('Front_Right_Wheel_Rim_0')['geometry'];
+                            });
+                            loader.load('rims/'+carcolor[i].id+'/rearleft1.glb', function(gltf) {
+                                cube.getObjectByName('Rear_Left_Wheel_Rim_0')['geometry'] = gltf.scene.getObjectByName('Rear_Left_Wheel_Rim_0')['geometry']
+                            });
+                            loader.load('rims/'+carcolor[i].id+'/rearright1.glb', function(gltf) {
+                                cube.getObjectByName('Rear_Right_Wheel_Rim_0')['geometry'] = gltf.scene.getObjectByName('Rear_Right_Wheel_Rim_0')['geometry'];
+                            });
+                            document.querySelector("#r").innerHTML = document.getElementById(carcolor[i].id).innerHTML;
+                            // updaterim();
+
+                            prices['r'] = prices[carcolor[i].id]
+                            cost.innerHTML = parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'];
+                            if(parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices[carcolor[i].id]+prices['s'] <= plimit) {
+                                cost.style.color = 'yellow';
+                            }
+                            else{
+                                cost.style.color = 'red';
+                                alert("your total cost is limited to "+ plimit +"/-");
+                            }
+
+                        }
+                        else if(carcolor[i].parentNode.className == "spoiler") {
+                            
+                            loader.load('spoilers/'+carcolor[i].id+'.glb', function(gltf) {
+                                cube.getObjectByName('Spoiler_Carbon_Fiber_0')['geometry'] = gltf.scene.getObjectByName('Spoiler_Carbon_Fiber_0')['geometry'];
+
+                            });
+                            document.querySelector("#s").innerHTML = document.getElementById(carcolor[i].id).innerHTML;
+
+                            prices['s'] = prices[carcolor[i].id]
+                            cost.innerHTML = parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s'];
+                            if(parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices[carcolor[i].id] <= plimit) {
+                                cost.style.color = 'yellow';
+                            }
+                            else{
+                                cost.style.color = 'red';
+                                alert("your total cost is limited to "+ plimit +"/-");
+                            }
+                        }
+                    };
+                    
+                }
+
+
+                // AJAX STUFF
+                document.getElementById("goodtogo").onclick = function() {
+                    if(parseInt(defaultprice.innerHTML)+prices['cc']+prices['dc']+prices['ic']+prices['et']+prices['r']+prices['s']<=parseInt(document.getElementById("totalpricelimit").innerHTML)) {
+                    document.getElementById("goodtogo").style.display = 'none';
+                    var hasan1 = document.getElementById("cc").innerHTML;
+                    var hasan2 = document.getElementById("dc").innerHTML;
+                    var hasan3 = document.getElementById("ic").innerHTML;
+                    var hasan4 = document.getElementById("et").innerHTML;
+                    var hasan5 = document.getElementById("r").innerHTML;
+                    var hasan6 = document.getElementById("s").innerHTML;
+                    var finalcost = prices['cc']+prices['dc'] + prices['ic'] + prices['et'] + prices['r'] + prices['s'] + parseInt(document.querySelector("#defaultprice").innerHTML);
+                    var csrf = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'end' %}",
+                        data: {
+                            'csrfmiddlewaretoken': csrf,
+                            'cc':hasan1,
+                            'dc': hasan2,
+                            'ic': hasan3,
+                            'et': hasan4,
+                            'r': hasan5,
+                            's': hasan6,
+                            'finalcost': finalcost
+                        },
+                        success: function(data) {
+                            window.location.href = "./info";
+                        },
+                        error: function(data) {
+                            console.log("ERROR");
+                        }
+                        
+                    });
+                    } else{
+                        alert("ORDER REQUEST FAILED!");
+                    }
+                };
+
+                
+                const controls = new OrbitControls( camera, renderer.domElement );
+                controls.minDistance = 1;
+                controls.maxDistance = 39;
+                controls.enablePan = false;
+                controls.target.set(0, 0, 0);
+                controls.update();
+
+                controls.maxPolarAngle = (Math.PI-(0.065))/2; 
+
+                window.addEventListener( 'resize', onWindowResize );
+
+                //LIGHT
+                // const light = new THREE.AmbientLight( 0xffffff ); // soft white light
+                // scene.add( light );
+
+                
+
+                render();
+
+                update();
+            }
+
+            function updatecarcolor() {
+                cube.getObjectByName('Hood_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Body_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Front_Bumper_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Left_Door001_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Right_Door_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Trunk_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Rear_Bumper_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Doorsit_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Seats_Interior_Body_Colour_0').material = bodyMaterial;
+                cube.getObjectByName('Rear_Left_Brake_Caliper_Calipers_0').material = bodyMaterial;
+            }
+            function updatedetailscolor() {
+                cube.getObjectByName('Front_Bumper_Carbon_Fiber_0').material = detailsMaterial;
+                cube.getObjectByName('Front_Left_WHeel_Rim_0').material = detailsMaterial;
+                cube.getObjectByName('Front_Right_Wheel_Rim_0').material = detailsMaterial;
+                cube.getObjectByName('Rear_Left_Wheel_Rim_0').material = detailsMaterial;
+                cube.getObjectByName('Rear_Right_Wheel_Rim_0').material = detailsMaterial;
+                cube.getObjectByName('Body_Grille_0').material = detailsMaterial;
+                cube.getObjectByName('Rear_Bumper_Carbon_Fiber_0').material = detailsMaterial;
+            }
+            function updateinteriorcolor() {
+                cube.getObjectByName('Seats_Carbon_Fiber_0').material = interiorMaterial;
+                cube.getObjectByName('Seats_Seat_Belt_0').material = interiorMaterial;
+                cube.getObjectByName('Seats_Metal_0').material = interiorMaterial;
+                cube.getObjectByName('Seats_Seat_0').material = interiorMaterial;
+                cube.getObjectByName('Interior_Leather_0').material = interiorMaterial;
+                cube.getObjectByName('Interior_Interior_0').material = interiorMaterial;
+            }
+
+            function updaterim() {
+                
+                
+                // cube.getObjectByName('Front_Left_WHeel_Rim_0').geometry = rimflGeometry;
+                // cube.getObjectByName('Front_Right_Wheel_Rim_0').geometry = rimfrGeometry;
+                // cube.getObjectByName('Rear_Left_Wheel_Rim_0').geometry = rimrlGeometry;
+                // cube.getObjectByName('Rear_Right_Wheel_Rim_0').geometry = rimrrGeometry;
+            }
+
+            function update() {
+                // scene.add(cube);
+                
+                
+            }
+
+            function onWindowResize() {
+
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize( window.innerWidth, window.innerHeight );
+
+                render();
+
+            }
+
+            var posx = 30, posz =  30;
+            function animate() {
+                // if(camera.position.y <= 1)
+                // camera.position.y = 1;
+                if(camera.position.y >= 40)
+                camera.position.y = 39.9;
+                requestAnimationFrame( animate );
+                render();
+            }
+
+            function render() {
+                renderer.render( scene, camera );
+            }
+
+
+
+
+        </script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+
+        <div class="cust"> 
+            {% csrf_token %}
+            <div class="reload">
+                <button id="reloadbtn" onclick="window.location.reload();" class="cyber-btn">
+                    RESET SELECTIONS
+                </button>
+            </div>
+            <div class="optionsblock" id="carcolor" onclick="fun(document.querySelector('#carcolor'))">
+                <button class="cybr-btn" id="first">
+                    Car Color<span aria-hidden>_</span>
+                    <span aria-hidden class="cybr-btn__glitch">Car Color</span>
+                </button>
+            </div>
+            <div class="optionsblock" id="detailscolor" onclick="fun(document.querySelector('#detailscolor'))">
+                <button class="cybr-btn" id="second">
+                    DETAILS COLOR<span aria-hidden>_</span>
+                    <span aria-hidden class="cybr-btn__glitch">DETAILS COLOR</span>
+                </button>
+            </div>
+            
+            <div class="optionsblock" id ="interiorcolor" onclick="fun(document.querySelector('#interiorcolor'))">
+                <button class="cybr-btn" id="third">
+                    Interior Color<span aria-hidden>_</span>
+                    <span aria-hidden class="cybr-btn__glitch">Interior Color</span>
+                </button></div>
+            <div class="optionsblock" id="engine" onclick="fun(document.querySelector('#engine'))">
+                <button class="cybr-btn" id="fourth">
+                    Engine Type<span aria-hidden>_</span>
+                    <span aria-hidden class="cybr-btn__glitch">Engine Type</span>
+                </button></div>
+            <div class="optionsblock" id="rim" onclick="fun(document.querySelector('#rim'))">
+                <button class="cybr-btn" id="fifth">
+                    Rims<span aria-hidden>_</span>
+                    <span aria-hidden class="cybr-btn__glitch">Rims</span>
+                </button></div>
+            <div class="optionsblock" id="spoiler" onclick="fun(document.querySelector('#spoiler'))">
+                <button class="cybr-btn" id="sixth">
+                    Spoilers<span aria-hidden>_</span>
+                    <span aria-hidden class="cybr-btn__glitch">Spoilers</span>
+                </button></div>
+            <div id="goodtogo" style="color: yellow">
+                <!-- <a href="./payments" target="_blank">Continue To Buy</a> -->
+                Continue To Order
+            </div>
+
+        </div>
+        
+        <div class="slide">
+            <div class="carcolor" style="display: block;">
+                <div class="slideblock" id="red" style="background-color: red;">
+                    
+                </div>
+                <div class="slideblock" id="blue" style="background-color: blue">
+                    
+                </div>
+                <div class="slideblock" id="black" style="background-color: black;">
+                    
+                </div>
+                <div class="slideblock" id="white" style="background-color: white;">
+                    
+                </div>
+                <div class="slideblock" id="tomato" style="background-color: tomato;">
+                    
+                </div>
+                <div class="slideblock" id="turquoise" onclick="hasan(document.querySelector('#turquoise'))" style="background-color: turquoise;">
+                    
+                </div>
+                <div class="slideblock" id="violet" onclick="hasan(document.querySelector('#violet'))" style="background-color: violet;">
+                    
+                </div>
+                <div class="slideblock" id="green" onclick="hasan(document.querySelector('#green'))" style="background-color: green;">
+                    
+                </div>
+                <div class="slideblock" id="grey" onclick="hasan(document.querySelector('#grey'))" style="background-color: grey;">
+                    
+                </div>
+            </div>
+            <div class="detailscolor" style="display: none;">
+                <div class="slideblock" id="red1" style="background-color: red;">
+                    
+                </div>
+                <div class="slideblock" id="blue1" style="background-color: blue">
+                    
+                </div>
+                <div class="slideblock" id="black1" style="background-color: black;">
+                    
+                </div>
+                <div class="slideblock" id="white1" style="background-color: white;">
+                </div>
+            </div>
+            <div class="interiorcolor" style="display: none;">
+                <div class="slideblock" id="black2" style="background-color: black;">
+                    
+                </div>
+                <div class="slideblock" id="white2" style="background-color: white;">
+                    
+                </div>
+            </div>
+            <div class="engine" style="display: none;">
+                <div id="V12" class="slideblock"><span onclick="hasan(349, 402, 2.8, 43)">V12 6.5-litre<br>27.88540 Lakhs<br>349 km/h (217 mph)</span></div>
+                <div id="V10" class="slideblock"><span onclick="hasan(325, 610, 2.9, 40)">V10 5.2-litre<br>22.44617 Lakhs<br>325 km/h (202 mph)</span></div> 
+                <!-- 3.73 crores 0-100 2.9 seconds -->
+                <div id="V8" class="slideblock"><span onclick="hasan(305, 796, 2.8, 39)">Twin Turbo 4.0 litre V8<br>25.1398 Lakhs<br>305 km/h (190 mph)</span></div>
+            </div>
+            <div class="rim" style="display: none;">
+                <div id="rim1" onclick="prakash('Carbon Ceramic')" class="slideblock" >BBS</div>
+                <div id="rim2" onclick="prakash('Carbon Ceramic')" class="slideblock">ENKEI</div>
+                <div id="rim3" onclick="prakash('Carbon Ceramic')" class="slideblock">VOSSEN(default)</div>
+            </div>
+            <div class="spoiler" style="display: none;">
+                <div id="spoiler1" class="slideblock">SEIBON CARBON</div>
+                <div id="spoiler2" class="slideblock">FLUSH MOUNT</div>
+                <div id="spoiler3" class="slideblock">DOUBLE DECK</div>
+                <div id="spoiler4" class="slideblock">FC3 RX-7(default)</div>
+            </div>
+        </div>
+        <div class="stats">
+            <div>
+                <div>SPEED </div>
+                <span id="speed" class="score">325</span>
+            </div>
+            <div>
+                <div>POWER </div>
+                <span id="horsepower" class="score">610</span>
+            </div>
+            <div>
+                <div>ACCELERATION(0-60) </div>
+                <span id="acceleration" class="score">2.9</span>
+            </div>
+            <div>
+                <div>HANDLING </div>
+                <span id="handling" class="score">40</span>
+            </div>
+            <div>
+                <div>BRAKES </div>
+                <span id="braking" class="score">Carbon Ceramic</span>
+            </div>
+            <div>
+                <div>TRANSMISSION(gears) </div>
+                <span id="transmission" class="score">100</span>
+            </div>
+            
+        </div>
+        
+        <div class="costclass">
+            TOTAL COST is <span id="cost">56243805</span> /-
+        </div>
+        <div class="pricelimit">
+            PRICE LIMIT is <span id="cost1">56500000</span> /-
+        </div>
+        <div class="seeselections" onmousedown="mousedown()" onmouseup="mouseup()">
+            SEE MY SELECTIONS(click and hold)
+        </div>
+        <div class="pricerange">
+            <label for="vol">PRICE RANGE<br>(55457897-56601655)</label><br>
+            <input type="range" onchange="pricelimitchange()" value="56500000" id="vol" name="vol" min="55457897" max="56601655">
+        </div>
+        <div class="hideddivision" style="display: none;">
+            <div id="cc">RED(default)</div>
+            <div id="dc">WHITE(default)</div>
+            <div id="ic">WHITE(default)</div>
+            <div id="et">V10(default)</div>
+            <div id="r">VOSSEN(default)</div>
+            <div id="s">FC3 RX-7(default)</div>
+            <div id="defaultprice">52663637</div>
+            <div id="totalpricelimit">56500000</div>
+        </div>
+        
+    </body>
+</html>
+
+<!-- LEAST COST = 55447897 -->
+<!-- HIGHEST COST = 56601655 -->

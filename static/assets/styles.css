@@ -1,0 +1,105 @@
+*{
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    }
+
+    /* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+    /* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+    /* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+    /* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+.tabcontent {
+    animation: fadeEffect 1s; /* Fading effect takes 1 second */
+}
+.navigation {
+    width: 0%;
+    height: 100%;
+    transition: 0.5s;
+    background: blueviolet;
+    overflow: hidden;
+    position: absolute;
+}
+.navigation.active {
+    width: 100%;
+}
+.toggle{
+    color: blueviolet;
+    cursor: pointer;
+    width: 60px;
+    height: 40px;
+    top: 0%;
+    right: 0%;
+    position: absolute;
+}
+.nonnav{
+    display: flex;
+    position: relative;
+}
+.pic{
+    position: relative;
+}
+.carnames{
+    top: 1.5%;
+    left: 37%;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    display: block;
+}
+.cars{
+    position:absolute;
+    width: 400px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+    display: inline-block;
+    /* border: 1px solid black; */
+}
+.cars li{
+    /* border: 1px solid black; */
+    display: inline-block;
+}
+.cars li a{
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 8px;
+    display: inline-block;
+}
+
+/* Go from zero to full opacity */
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}

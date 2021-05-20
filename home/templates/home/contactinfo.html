@@ -1,0 +1,388 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AUTOMOBILE SYSTEM</title>
+        <!-- <script type="text/javascript" src="https://dev.virtualearth.net/REST/v1/Imagery/Map/imagerySet/centerPoint/zoomLevel?mapSize=10&pushpin={pushpin}&mapLayer={mapLayer}&format={format}&mapMetadata=1&key=Avz640t_mi-yltJviwDzbK2C8oEHp2C9Lk_F7PDERrfRnA8dD6pTzLWiMjLSFh16"></script> -->
+        <style>
+            body, html{
+                margin: 0;
+                padding: 0;
+                font-family: Cyber;
+                background-color: #000061;
+                overflow: hidden;
+            }
+            @font-face {
+                font-family: Cyber;
+                src: url("https://assets.codepen.io/605876/Blender-Pro-Bold.otf");
+                font-display: swap;
+            }
+            .container{
+                display: grid;
+                grid-template-columns: 50% 50%;
+                grid-auto-rows: 100%;
+                align-items: center;
+                text-align: center;
+                color: white;
+                height: 100vh;
+            }
+            .map {
+            }
+            .close{
+                position: absolute;
+                top: 2%;
+                left: 2%;
+            }
+            .container > div{
+                /* border: 2px solid black; */
+            }
+            .address{
+                
+                align-items: center;
+                justify-items: center;
+                text-align: center;
+                /* padding-top: 180px;
+                padding-bottom: 180px; */
+                padding-top: 31.5vh;
+                padding-bottom: 31.5vh;
+                /* background-color: #000061; */
+                background-image: linear-gradient(to right, black, #000061);
+            }
+            .popup{
+                position: absolute;
+                right: 0%;
+                height: 100vh;
+                width: 0%;
+                background-color: cadetblue;
+                transition: width 0.5s ease-in-out;
+                overflow: hidden;
+                border-top-left-radius: 16px;
+                border-bottom-left-radius: 16px;
+                background-image: linear-gradient(to right, #000061 , black);
+            }
+            .popup.active{
+                width: 50%;
+            }
+            #prev{
+                position: absolute;
+                bottom: 5%;
+                left: 5%;
+            }
+            #next{
+                position: absolute;
+                bottom: 5%;
+                right: 5%;
+            }
+            .blocks{
+                position: absolute;
+                top: 50%;
+                height: 80%;
+                transform: translateY(-50%);
+                width: 100%;
+                background-color: #000061;
+                white-space: nowrap;
+                transition: transform 0.5 ease-in-out;
+                text-align: center;
+                align-items: center;
+                overflow: hidden;
+                background-image: linear-gradient(to right, #000061 , black);
+            }
+            .block1, .block2, .block3{
+                display: inline-block;
+                width: 100%;
+                text-align: center;
+                white-space: nowrap;
+                transition: transform 0.5s ease-in-out;
+            }
+
+            .privacy{
+                text-align: center;
+                height: 50%;
+            }
+            .caro {
+                width: 210px;
+                padding: 5px 10px;
+            }
+            .option {
+                text-align: center;
+            }
+            .input{
+                padding: 5px 10px;
+                border: 2px solid white;
+                background-color: transparent;
+                
+                color: white;
+                
+            }
+        </style>
+        <link rel="stylesheet" href="{% static 'assets/all.min.css' %}"/>
+        <!-- <link rel="stylesheet" href="{% static 'assets/contactinfo.css' %}"/>
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+        <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' /> -->
+    </head>
+    <body>
+        <script>
+            var tx = 0;
+            function toggle() {
+                document.querySelector(".popup").classList.toggle('active');
+            }
+            function next() {
+                var next = document.querySelector("#next");
+                var prev = document.querySelector("#prev");
+                if(this.tx>-200) {
+                    this.tx -= 100;
+                    var block1 = document.querySelector(".block1");
+                    var block2 = document.querySelector(".block2");
+                    var block3 = document.querySelector(".block3");
+                    block1.style.transform = 'translateX('+ this.tx +'%)';
+                    block2.style.transform = 'translateX('+ this.tx +'%)';
+                    block3.style.transform = 'translateX('+ this.tx +'%)';
+                    next.disabled = false;
+                    if(this.tx<=-200)
+                    next.disabled = true;
+                }
+                if(this.tx<0) 
+                prev.disabled = false;
+                // console.log(this.tx);
+            }
+            function prev() {
+                var prev = document.querySelector("#prev");
+                var next = document.querySelector("#next");
+                if(this.tx<0) {
+                    this.tx += 100;
+                    var block1 = document.querySelector(".block1");
+                    var block2 = document.querySelector(".block2");
+                    var block3 = document.querySelector(".block3");
+                    block1.style.transform = 'translateX('+ +this.tx +'%)';
+                    block2.style.transform = 'translateX('+ +this.tx +'%)';
+                    block3.style.transform = 'translateX('+ +this.tx +'%)';
+                    if(this.tx<=0 && this.tx >=-5) {
+                        prev.disabled = true;
+                    }
+                }
+                if(this.tx>-200)
+                next.disabled = false;
+                // console.log(this.tx);
+            }
+        </script>
+        <div class="container">
+            <div class="address">
+                <h2>{{ state }}</h2>
+                <p>{{ name }}</p>
+                <p>{{ address }}</p>
+                <p>{{ street }}</P>
+                <p>{{ pincode }} {{ city }} INDIA</p>
+                <p>Phone: {{ phone }}</p>
+                <button style="padding: 5px 10px; border: 2px solid white; background-color: #000061; cursor: pointer; color: white;" onclick="toggle()">CONTACT US</button>
+            </div>
+            <div class="map">
+                {% if city == "Banglore" %}
+                <img style="width: 100%; height: 100%;" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-car+e60f0f(77.6350,12.9773)/77.6350,12.9773,15,0,52/600x600@2x?access_token=pk.eyJ1IjoiaGFzYW5wcmFrYXNoIiwiYSI6ImNrb3EyZzVjNTBxeXYyd2w0dWhhZ2FtcnoifQ.pRMaSQ5sYD4B9P3JEudspA" alt="Mapbox Map of 77.6350,12.9773">
+                {% elif city == "New Delhi" %}
+                <img style="width: 100%; height: 100%;" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-car+e60f0f(77.2167,28.6448)/77.2167,28.6448,15,0,52/600x600@2x?access_token=pk.eyJ1IjoiaGFzYW5wcmFrYXNoIiwiYSI6ImNrb3EyZzVjNTBxeXYyd2w0dWhhZ2FtcnoifQ.pRMaSQ5sYD4B9P3JEudspA" alt="Mapbox Map of 77.2167,28.6448">
+                {% elif city == "Kolkata" %}
+                <img style="width: 100%; height: 100%;" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-car+0fb0e6(86.8786,23.7154)/86.8786,23.7154,15,0,52/600x600@2x?access_token=pk.eyJ1IjoiaGFzYW5wcmFrYXNoIiwiYSI6ImNrb3EyZzVjNTBxeXYyd2w0dWhhZ2FtcnoifQ.pRMaSQ5sYD4B9P3JEudspA" alt="Mapbox Map of 86.8786,23.7154">
+                {% elif city == "Chennai" %}
+                <img style="width: 100%; height: 100%;" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-car+23ec09(80.2376,12.9354)/80.2376,12.9354,15,0,56/500x600@2x?access_token=pk.eyJ1IjoiaGFzYW5wcmFrYXNoIiwiYSI6ImNrb3EyZzVjNTBxeXYyd2w0dWhhZ2FtcnoifQ.pRMaSQ5sYD4B9P3JEudspA" alt="Mapbox Map of 80.2376,12.9354">
+                {% elif city == "Hyderabad" %}
+                <img style="width: 100%; height: 100%;" src="https://api.mapbox.com/styles/v1/mapbox/outdoors-v11/static/pin-m-car+0717f2(72.8366,19.0616)/72.8366,19.0616,15,0,56/500x600@2x?access_token=pk.eyJ1IjoiaGFzYW5wcmFrYXNoIiwiYSI6ImNrb3EyZzVjNTBxeXYyd2w0dWhhZ2FtcnoifQ.pRMaSQ5sYD4B9P3JEudspA" alt="Mapbox Map of 72.8366,19.0616">
+                {% endif %}
+                <div id="map"></div>
+            </div>
+            <div class="popup">
+                <div class="close" onclick="toggle()">
+                    <i class="fas fa-times-circle"></i> 
+                </div>
+
+                <button id="prev" style="background-color: #000061; color: white; border: 2px solid white;" disabled onclick="prev()">PREV</button>
+                <button id="next" style="background-color: #000061; color: white; border: 2px solid white;" onclick="next()">NEXT</button>
+                <div class="blocks">
+                    <form action="{% url 'testing' %}" method="POST">
+                        {% csrf_token %}
+                    <div class="block1">
+                        <div class="field1">
+                            <select class="caro" name="brand">
+                                <option>CAR BRAND</option>
+                                <option>LAMBORGHINI</option>
+                            </select><br><br>
+                            <select class="caro" name="model">
+                                <option>CAR MODEL</option>
+                                <option>LAMBORGHINI ROADSTER</option>
+                            </select><br><br>
+                            Are you already a customer??
+                            <div>
+                                <input type="radio" name="yesno" value="yes"> YES
+                                <input type="radio" name="yesno" value="no"> NO
+                            </div><br>
+                        </div>
+                        <br><br><br><br><br><br><br>
+                    </div>
+                    <div class="block2">
+                        <br>
+                        SALUTATION
+                        <div>
+                            <input type="radio" name="gender" value="male"> MR
+                            <input type="radio" name="gender" value="female"> MRS
+                        </div><br>
+                        <input class="input" type="text" name="firstname" placeholder="FIRSTNAME" required/>
+                        <input class="input" type="text" name="lastname" placeholder="LASTNAME" required/><br><br>
+                        <input class="input" type="text" name="address" placeholder="ADDRESS" required/><br><br>
+                        <input class="input" type="text" name="country" placeholder="COUNTRY" required/>
+                        <input class="input" type="text" name="city" placeholder="CITY" required/><br><br>
+                        <input class="input" type="email" name="email" placeholder="EMAIL" required/>
+                        <input class="input" type="number" name="phone" placeholder="PHONE" required/><br><br><br><br><br><br><br>
+                    </div>
+                    <div class="block3">
+                       <div class="privacy">
+                        <div style="height: 400px; width: 98%; overflow: auto; margin: 10px; margin-top: 20px; text-align: left;">
+                            * Information We May Collect
+                            We collect these information related to you <br>or your use of our products and services:<br>
+
+                            (1) Information from or about you or your devices<br>
+                            (2) Information from or about your customized vehicle<br>
+
+                            * How We May Use Your Information<br>
+                            We may use information we collect to:<br>
+
+                            (1) Communicate with you<br>
+                            <b>INCLUDES</b><br>
+                            &bull; To respond to your inquiries and fulfill your requests, <br>
+                            such as to send you newsletters or product information, information<br>
+                            alerts, information about events, or brochures.<br>
+                            &bull; To set up, evaluate, and provide feedback regarding your <br>
+                            Tesla test drive, a home visit by one of our energy advisers, or<br>
+                            the installation of your energy product.<br>
+                            &bull; To advise you of important safety-related information about<br>
+                            your vehicle or energy product or to notify first responders in the <br>
+                            event of an accident involving your vehicle.<br>
+                            &bull; From time to time, we may send administrative information <br>
+                            to you, such as information regarding our products and services, <br>
+                            and changes to our terms, conditions, and policies. Due to this <br>
+                            information being important to your interaction with Tesla, you <br>
+                            may not opt out of receiving these communications.<br>
+                            &bull; To present products and offers tailored to you and to enhance <br>
+                            our lists with information from other sources.<br>
+                            &bull; To allow you to participate in contests and similar <br>
+                            promotions and to administer these activities.<br>
+                            &bull; To facilitate social sharing and communications functionality.<br>
+                            &bull; You can opt out of receiving promotional-related <br>
+                            communications at any time.<br>
+                            (2) Fulfill our products and services<br>
+                            <b>INCLUDES</b><br>
+                            &bull; To complete and fulfill your purchase, including to process your <br>
+                            payments, fulfill your requests for product leasing or financing, <br>
+                            have your order installed or delivered to you, communicate with you <br>
+                            regarding your purchase, and provide you with related customer service.<br>
+                            We may use your information, including vehicle identification <br>
+                            number or other product serial number, to verify identity, assist <br>
+                            with your request, and to determine appropriate services. For example, <br>
+                            we may use the vehicle identification number to determine which <br>
+                            product you may need assistance with.<br>
+                            &bull; To provide service to your product, such as to contact you <br>
+                            with service recommendations and to deliver over-the-air updates to <br>
+                            your product.<br>
+                            &bull; To monitor your product’s performance and provide services <br>
+                            related to your product.<br>
+                            &bull; To deliver any other services you have requested.<br>
+                            (3) Improve and enhance development of our products and services<br>
+                            <b>INCLUDES</b>
+                            &bull; To develop and promote new products and services, and to <br>
+                            improve or modify our existing products and services.<br>
+                            &bull; To analyze and improve the safety and security of our <br>
+                            products and services.<br>
+                            &bull; For our business purposes, such as data analysis, audits, <br>
+                            fraud monitoring and prevention, identifying usage trends, determining<br>
+                             the effectiveness of our promotional campaigns, and operating and <br>
+                             expanding our business activities.<br>
+                            &bull; Except as described above and below, we may use or share <br>
+                            non-personally identifiable information for any purpose, such as <br>
+                            for operational or research purposes, for industry analysis, to <br>
+                            improve or modify our products and services, to better tailor our<br>
+                            products and services to your needs, and where legally required.<br><br>
+                            
+                            This includes contacting you (or other necessary parties) to advise <br>
+                            you of important safety-related information, to notify first responders <br>
+                            in the event of an accident involving your vehicle, present products <br>
+                            and offers tailored to you, or to respond to your inquiries and fulfill <br>
+                            your requests for product information, newsletters, or other events.<br>
+
+                        </div>
+                           <input type="checkbox" name="accept" required/><span style="font-size: larger;">agree all terms and conditions.</span>
+                           
+
+                       <!-- THANK YOU!
+ 
+                        Your contact request has been sent.
+                        You will receive an email confirming that the report
+                        has been properly processed.
+
+
+
+                        
+                        LAMBORGHINI TEAM. -->
+                        
+                        <br><input type="submit" style="padding: 4px 8px; margin-left: 40%;"/>
+                        <br><br>
+                        
+                       </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- <script>
+            mapboxgl.accessToken = 'pk.eyJ1IjoiaGFzYW5wcmFrYXNoIiwiYSI6ImNrb3EyZzVjNTBxeXYyd2w0dWhhZ2FtcnoifQ.pRMaSQ5sYD4B9P3JEudspA';
+
+            var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/light-v10',
+            center: [-96, 37.8],
+            zoom: 3
+            });
+
+            // code from the next step will go here!
+            var geojson = {
+            type: 'FeatureCollection',
+            features: [{
+                type: 'Feature',
+                geometry: {
+                type: 'Point',
+                coordinates: [-77.032, 38.913]
+                },
+                properties: {
+                title: 'Mapbox',
+                description: 'Washington, D.C.'
+                }
+            },
+            {
+                type: 'Feature',
+                geometry: {
+                type: 'Point',
+                coordinates: [-122.414, 37.776]
+                },
+                properties: {
+                title: 'Mapbox',
+                description: 'San Francisco, California'
+                }
+            }]
+            };
+            // add markers to map
+            geojson.features.forEach(function(marker) {
+
+            // create a HTML element for each feature
+            var el = document.createElement('div');
+            el.className = 'marker';
+
+            // make a marker for each feature and add to the map
+            new mapboxgl.Marker(el)
+            .setLngLat(marker.geometry.coordinates)
+            .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
+            .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p>'))
+            .addTo(map);
+            });
+            
+        </script> -->
+    </body>
+</html>
